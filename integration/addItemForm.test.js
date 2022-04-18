@@ -1,5 +1,5 @@
 describe('addItemForm', () => {
-    it('base example, visually looks correct', async () => {
+    it('base example, visually looks correct', async (page) => {
         // APIs from jest-puppeteer
         await page.goto('http://localhost:9009/iframe.html?path=/story/additemform-stories--add-item-form-base-example');
         const image = await page.screenshot();
