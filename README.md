@@ -5,14 +5,14 @@ Project is continuously refine.
 Actually i use it for myself :)
 
 ## Tools
-TypeScript
-Redux / migration to Redux Toolkit in process
-Redux Thunk
-Axios
-Jest
-Storybook
-Formik
-Material UI
+TypeScript,
+Redux / migration to Redux Toolkit in process,
+Redux Thunk,
+Axios,
+Jest,
+Storybook,
+Formik,
+Material UI.
 
 
 
