@@ -19,16 +19,33 @@ export const loginTC = createAsyncThunk('auth/loginTC', async (data: LoginParams
         const res = await authAPI.login(data);
         if (res.data.resultCode === 0) {
             thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
-            return {value: true}
+            return
         } else {
             handleServerAppError(res.data, thunkAPI.dispatch)
             return thunkAPI.rejectWithValue({value: false})
         }
     } catch (error: any) {
-        handleServerNetworkError(error, thunkAPI.dispatch)
+        handleServerNetworkError({message: error}, thunkAPI.dispatch)
         return thunkAPI.rejectWithValue({value: false})
     }
 
+})
+
+export const logoutTC = createAsyncThunk('auth/logout', async (_, {dispatch, rejectWithValue}) => {
+    try {
+        dispatch(setAppStatusAC({status: 'loading'}))
+        const res = await authAPI.logout()
+        if (res.data.resultCode === 0) {
+            dispatch(setAppStatusAC({status: 'succeeded'}))
+            return
+        } else {
+            handleServerAppError(res.data, dispatch)
+            return rejectWithValue({})
+        }
+    } catch (error: any) {
+        handleServerNetworkError({message: error}, dispatch)
+        return rejectWithValue({})
+    }
 })
 
 
@@ -41,9 +58,11 @@ const slice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(loginTC.fulfilled, (state, action) => {
-            state.isLoggedIn = action.payload.value;
-
+        builder.addCase(loginTC.fulfilled, (state) => {
+            state.isLoggedIn = true;
+        })
+        builder.addCase(logoutTC.fulfilled, (state) => {
+            state.isLoggedIn = false;
         })
     }
 })
@@ -54,19 +73,5 @@ export const {setIsLoggedInAC} = slice.actions
 
 // thunks
 
-export const logoutTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'}))
-    authAPI.logout()
-        .then(res => {
-            if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC({value: true}))
-                dispatch(setAppStatusAC({status: 'succeeded'}))
-            } else {
-                handleServerAppError(res.data, dispatch)
-            }
-        })
-        .catch((error) => {
-            handleServerNetworkError(error, dispatch)
-        })
-}
+
 
